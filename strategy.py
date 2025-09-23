@@ -8,15 +8,10 @@ import json
 import os
 import sys
 
-# Add parent directory to path to import config_manager
-config_path = os.path.join(os.path.dirname(__file__), '..', '..')
-sys.path.insert(0, config_path)
-from config_manager import get_current_server
-
 # Configuration
 PLAYER_NAME = "tit-for-tat"
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN", "test-token-456")
-SERVER_URL = get_current_server()
+SERVER_URL = "https://dynamic-game-platform-914970891924.us-central1.run.app"
 
 def strategy(state):
     """
