@@ -1,12 +1,12 @@
-name: Tit-for-Tat Player (Manual)
+name: Tit-for-Tat Player
 
 on:
   workflow_dispatch:
     inputs:
       debug_mode:
-        description: 'Enable debug mode with extra logging'
+        description: 'Enable debug mode'
         required: false
-        default: 'false'
+        default: false
         type: boolean
 
 jobs:
@@ -23,20 +23,15 @@ jobs:
         python-version: '3.11'
         
     - name: Install dependencies
-      run: |
-        pip install requests
+      run: pip install requests
         
-    - name: Run Tit-for-Tat Strategy
+    - name: Run Strategy
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        RUN_MODE: "manual"
         DEBUG_MODE: ${{ inputs.debug_mode }}
       run: |
-        echo "🤖 Running Tit-for-Tat strategy (manual mode)"
+        echo "🤖 Running Tit-for-Tat strategy"
         if [ "$DEBUG_MODE" = "true" ]; then
           echo "🐛 Debug mode enabled"
-          echo "📊 Environment variables:"
-          echo "  RUN_MODE: $RUN_MODE"
-          echo "  DEBUG_MODE: $DEBUG_MODE"
         fi
         python strategy.py
