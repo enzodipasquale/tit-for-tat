@@ -52,7 +52,7 @@ def main():
     print(f"🤔 Action: {action}")
     
     response = requests.post(f"{SERVER_URL}/action", 
-                           headers={"Authorization": f"Bearer {GITHUB_TOKEN}"},
+                           # headers={"Authorization": f"Bearer {GITHUB_TOKEN}"},
                            json={"strategy": {"action": action}, "player_name": PLAYER_NAME})
     
     if response.status_code == 200:
