@@ -1,0 +1,37 @@
+name: Tit-for-Tat Player
+
+on:
+  workflow_dispatch:
+    inputs:
+      debug_mode:
+        description: 'Enable debug mode'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  play-game:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: pip install requests
+        
+    - name: Run Strategy
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        DEBUG_MODE: ${{ inputs.debug_mode }}
+      run: |
+        echo "🤖 Running Tit-for-Tat strategy"
+        if [ "$DEBUG_MODE" = "true" ]; then
+          echo "🐛 Debug mode enabled"
+        fi
+        python strategy.py
