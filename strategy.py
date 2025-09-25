@@ -69,6 +69,33 @@ def submit_action(action):
         print(f"❌ Error submitting action: {e}")
         return False
 
+def register_player():
+    """Register player with the server"""
+    try:
+        headers = {
+            "Content-Type": "application/json"
+        }
+        data = {
+            "player_name": PLAYER_NAME,
+            "token": GITHUB_TOKEN
+        }
+        
+        response = requests.post(f"{SERVER_URL}/register", 
+                               headers=headers, 
+                               json=data, 
+                               timeout=10)
+        
+        if response.status_code == 200:
+            result = response.json()
+            print(f"✅ Player registered: {result}")
+            return True
+        else:
+            print(f"❌ Error registering player: {response.status_code} - {response.text}")
+            return False
+    except Exception as e:
+        print(f"❌ Error registering player: {e}")
+        return False
+
 def main():
     """Main function - gets game state and submits strategy"""
     print(f"🎮 {PLAYER_NAME} playing turn...")
