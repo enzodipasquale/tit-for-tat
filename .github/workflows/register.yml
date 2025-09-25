@@ -1,0 +1,61 @@
+name: Register Player
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  register:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: pip install requests
+      
+    - name: Register Player
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        echo "🤖 Registering Tit-for-Tat player"
+        python -c "
+        import requests
+        import os
+        
+        # Configuration
+        PLAYER_NAME = 'tit-for-tat'
+        GITHUB_TOKEN = os.getenv('GITHUB_TOKEN', 'test-token-456')
+        SERVER_URL = 'https://dynamic-game-platform-914970891924.us-central1.run.app'
+        
+        # Register player
+        try:
+            headers = {
+                'Content-Type': 'application/json',
+                'Authorization': f'Bearer {GITHUB_TOKEN}'
+            }
+            data = {
+                'player_name': PLAYER_NAME,
+                'strategy_type': 'tit-for-tat'
+            }
+            
+            response = requests.post(f'{SERVER_URL}/register', 
+                                   headers=headers, 
+                                   json=data, 
+                                   timeout=10)
+            
+            if response.status_code == 200:
+                result = response.json()
+                print(f'✅ Player registered: {result}')
+            else:
+                print(f'❌ Registration failed: {response.status_code} - {response.text}')
+        except Exception as e:
+            print(f'❌ Registration error: {e}')
+        "
