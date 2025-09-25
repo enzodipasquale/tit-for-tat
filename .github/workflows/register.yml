@@ -38,12 +38,11 @@ jobs:
         # Register player
         try:
             headers = {
-                'Content-Type': 'application/json',
-                'Authorization': f'Bearer {GITHUB_TOKEN}'
+                'Content-Type': 'application/json'
             }
             data = {
                 'player_name': PLAYER_NAME,
-                'strategy_type': 'tit-for-tat'
+                'token': GITHUB_TOKEN
             }
             
             response = requests.post(f'{SERVER_URL}/register', 
