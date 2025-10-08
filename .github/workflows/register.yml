@@ -23,27 +23,24 @@ jobs:
       
     - name: Register Player
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GAME_TOKEN }}
+        SERVER_URL: ${{ secrets.SERVER_URL }}
       run: |
         echo "🤖 Registering Tit-for-Tat player"
         python -c "
         import requests
         import os
         
-        # Configuration
         PLAYER_NAME = 'tit-for-tat'
-        GITHUB_TOKEN = os.getenv('GITHUB_TOKEN', 'test-token-456')
-        SERVER_URL = 'https://dynamic-game-platform-914970891924.us-central1.run.app'
+        GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
+        SERVER_URL = os.getenv('SERVER_URL')
         
-        # Register player
         try:
             headers = {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': f'Bearer {GITHUB_TOKEN}'
             }
-            data = {
-                'player_name': PLAYER_NAME,
-                'token': GITHUB_TOKEN
-            }
+            data = {'player_name': PLAYER_NAME}
             
             response = requests.post(f'{SERVER_URL}/register', 
                                    headers=headers, 

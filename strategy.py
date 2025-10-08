@@ -10,8 +10,13 @@ import sys
 
 # ==================== CONFIGURATION ====================
 PLAYER_NAME = "tit-for-tat"
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN", "test-token-456")
-SERVER_URL = "https://dynamic-game-platform-914970891924.us-central1.run.app"
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+SERVER_URL = os.getenv("SERVER_URL")
+
+if not SERVER_URL:
+    print("❌ SERVER_URL environment variable not set!")
+    print("Set it to your deployed server, e.g.: https://game-platform-v2-xxx.run.app")
+    sys.exit(1)
 
 def strategy(state):
     """
@@ -48,10 +53,7 @@ def submit_action(action):
             "Content-Type": "application/json",
             "Authorization": f"Bearer {GITHUB_TOKEN}"
         }
-        data = {
-            "strategy": {"action": action},
-            "player_name": PLAYER_NAME
-        }
+        data = {"action": action}
         
         response = requests.post(f"{SERVER_URL}/action", 
                                headers=headers, 
@@ -69,40 +71,13 @@ def submit_action(action):
         print(f"❌ Error submitting action: {e}")
         return False
 
-def register_player():
-    """Register player with the server"""
-    try:
-        headers = {
-            "Content-Type": "application/json"
-        }
-        data = {
-            "player_name": PLAYER_NAME,
-            "token": GITHUB_TOKEN
-        }
-        
-        response = requests.post(f"{SERVER_URL}/register", 
-                               headers=headers, 
-                               json=data, 
-                               timeout=10)
-        
-        if response.status_code == 200:
-            result = response.json()
-            print(f"✅ Player registered: {result}")
-            return True
-        else:
-            print(f"❌ Error registering player: {response.status_code} - {response.text}")
-            return False
-    except Exception as e:
-        print(f"❌ Error registering player: {e}")
-        return False
-
 def main():
     """Main function - gets game state and submits strategy"""
     print(f"🎮 {PLAYER_NAME} playing turn...")
     
     # Get current game state
     try:
-        response = requests.get(f"{SERVER_URL}/state", timeout=10)
+        response = requests.get(f"{SERVER_URL}/status", timeout=10)
         if response.status_code != 200:
             print(f"❌ Error getting game state: {response.status_code}")
             return
