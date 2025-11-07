@@ -1,0 +1,26 @@
+name: Schedule Strategy
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  play:
+    continue-on-error: true
+    if: github.event_name != 'schedule' || vars.ENABLE_SCHEDULE == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - run: pip install requests
+    - name: Run strategy
+      env:
+        GITHUB_TOKEN: ${{ secrets.GAME_TOKEN }}
+        SERVER_URL: ${{ secrets.SERVER_URL }}
+      run: python strategy.py
+
+
